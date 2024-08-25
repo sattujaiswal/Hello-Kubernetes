@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-fibonacci-deployment
+  labels:
+    app: fastapi-fibonacci
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: fastapi-fibonacci
+  template:
+    metadata:
+      labels:
+        app: fastapi-fibonacci
+    spec:
+      containers:
+      - name: fastapi-fibonacci
+        image: sattu2024/fastapi-fibonacci:latest
+        ports:
+        - containerPort: 80
