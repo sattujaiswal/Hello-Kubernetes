@@ -28,3 +28,32 @@ This repository contains the configuration files and documentation for a Kuberne
 
    ```bash
    docker build -t sattu2024/fastapi-fibonacci:latest .
+
+		Apply Kubernetes Configuration
+Apply the Kubernetes Deployment and Service configurations:
+kubectl apply -f fastapi-deployment.yml
+kubectl apply -f fastapi-service.yml
+
+Apply the Kubernetes Job configuration:
+kubectl apply -f example-job.yml
+
+	Verify Deployments and Services
+Check the status of pods and services:
+kubectl get pods
+kubectl get services
+
+	View Logs
+View logs of running pods:
+kubectl logs <pod-name>
+
+Cleaning Up
+
+To delete the deployments, services, and jobs:
+kubectl delete -f fastapi-deployment.yml
+kubectl delete -f fastapi-service.yml
+kubectl delete -f example-job.yml
+
+Additional Notes
+
+	•	The Kubernetes Job is configured to print “Hello World” every 2 seconds for 30 seconds.
+	•	Ensure that you have the correct permissions and access to your Kubernetes cluster and Docker registry.
