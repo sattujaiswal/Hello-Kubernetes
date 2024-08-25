@@ -29,28 +29,28 @@ This repository contains the configuration files and documentation for a Kuberne
    ```bash
    docker build -t sattu2024/fastapi-fibonacci:latest .
 
-Apply Kubernetes Configuration
+# Apply Kubernetes Configuration
 Apply the Kubernetes Deployment and Service configurations:
-    kubectl apply -f fastapi-deployment.yml
-    kubectl apply -f fastapi-service.yml
+ - kubectl apply -f fastapi-deployment.yml
+ - kubectl apply -f fastapi-service.yml
 
-Apply the Kubernetes Job configuration:
-    kubectl apply -f example-job.yml
+# Apply the Kubernetes Job configuration:
+ - kubectl apply -f example-job.yml
 
-verify Deployments and Services
+# verify Deployments and Services
 Check the status of pods and services:
-    kubectl get pods
-    kubectl get services
+- kubectl get pods
+- kubectl get services
 
-View Logs
+# View Logs
 View logs of running pods:
-    kubectl logs <pod-name>
+- kubectl logs <pod-name>
 
-Cleaning Up
+# Cleaning Up
 To delete the deployments, services, and jobs:
-    kubectl delete -f fastapi-deployment.yml
-    kubectl delete -f fastapi-service.yml
-    kubectl delete -f example-job.yml
+- kubectl delete -f fastapi-deployment.yml
+- kubectl delete -f fastapi-service.yml
+- kubectl delete -f example-job.yml
 
 Additional Notes
 
