@@ -1,16 +1,20 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-def fibonacci(n: int) -> int:
-    if n <= 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        return fibonacci(n - 1) + fibonacci(n - 2)
+@app.get("/health")
+def health_check():
+    """
+    Health status endpoint.
+    Returns 200 OK with a message if the service is running fine.
+    """
+    return JSONResponse(content={"status": "healthy", "message": "Service is running fine!"}, status_code=200)
 
-@app.get("/fibonacci/{n}")
-def read_fibonacci(n: int):
-    result = fibonacci(n)
-    return {"fibonacci_number": result}
+@app.get("/test")
+def health_check():
+    """
+    Health status endpoint.
+    Returns 200 OK with a message if the service is running fine.
+    """
+    return JSONResponse(content={"status": "Cool", "message": "I am loving k8s!"}, status_code=200)    
