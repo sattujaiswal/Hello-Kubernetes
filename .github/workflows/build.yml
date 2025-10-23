@@ -3,19 +3,21 @@ name: Build and Deploy to EKS
 on:
   push:
     branches:
-      - satya   # 👈 your branch
+      - satya
 
 env:
   AWS_REGION: ap-south-1
   ECR_REPOSITORY: fastapi-demo
   CLUSTER_NAME: demo-eks
+  DEPLOYMENT_NAME: fastapi-deploy
+  CONTAINER_NAME: fastapi
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -29,7 +31,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image to ECR
+      - name: Build, tag and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
@@ -37,9 +39,28 @@ jobs:
           docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=$ECR_REGISTRY" >> $GITHUB_ENV  # make registry available to later steps
 
-      - name: Update deployment in EKS
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.33.0'
+
+      - name: Update kubeconfig
         run: |
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
-          kubectl set image deployment/fastapi-deploy fastapi=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          kubectl rollout status deployment/fastapi-deploy
+          aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+
+      # Optional: apply manifests if you keep them in k8s/ (won't fail if folder absent)
+      - name: Apply Kubernetes manifests (optional)
+        run: |
+          if [ -d k8s ]; then
+            kubectl apply -f k8s/
+          else
+            echo "k8s/ folder not found; skipping manifest apply."
+          fi
+
+      - name: Update Deployment image and wait for rollout
+        run: |
+          kubectl set image deployment/$DEPLOYMENT_NAME \
+            $CONTAINER_NAME=$ECR_REGISTRY/${ECR_REPOSITORY}:${IMAGE_TAG}
+          kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=5m
