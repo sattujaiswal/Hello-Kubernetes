@@ -9,7 +9,7 @@ env:
   AWS_REGION: ap-south-1
   ECR_REPOSITORY: fastapi-demo
   CLUSTER_NAME: demo-eks
-  DEPLOYMENT_NAME: fastapi-deploy
+  DEPLOYMENT_NAME: fastapi-deploy-v2
   CONTAINER_NAME: fastapi
 
 jobs:
